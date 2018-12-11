@@ -1,17 +1,57 @@
-pragma solidity 0.5.1;
+pragma solidity 0.4.24;
 
 /// @title Marketplace
 /// @author Daniel Gretzke
 contract Marketplace {
     
+    // owner, admin, storeOwner variables
     address public owner;
     mapping(address => bool) public admins;
-    mapping(address => bool) public shopOwners;
+    mapping(address => bool) public storeOwners;
 
+    // events
     event addedAdmin(address indexed admin);
     event removedAdmin(address indexed admin);
-    event addedShopOwner(address indexed shopOwner, address indexed admin);
-    event removedShopOwner(address indexed shopOwner, address indexed admin);
+    event addedStoreOwner(address indexed storeOwner, address indexed admin);
+    event removedStoreOwner(address indexed storeOwner, address indexed admin);
+    
+    event addedStore(address indexed storeOwner, uint256 storeID);
+    event removedStore(address indexed storeOwner, uint256 storeID);
+    event addedItem(address indexed storeOwner, uint256 storeID, uint256 itemID);
+    event removedItem(address indexed storeOwner, uint256 storeID, uint256 itemID);
+
+    // store and item structs
+    struct Store {
+        bytes32 storeID;
+        string name;
+        string description;
+        address owner;
+        // items are stored inside a mapping, mapped from a bytes32 key to an item
+        mapping(bytes32 => Item) items;
+        // items can be retreived via an unordered array of bytes32 keys
+        bytes32[] itemIdList;
+        // index inside storeIdList array for cheap deletion of stores
+        uint256 index;
+    }
+
+    struct Item {
+        string name;
+        string description;
+        // ipfs hash (placeholder, needs to be adjusted to real ipfs hashes)
+        bytes32 image;
+        uint256 price;
+        // index inside itemIdList array for cheap deletion of items
+        uint256 index;
+    }
+    
+    // stores are stored inside a mapping, mapped from a bytes32 key to a store
+    // each storeOwner has its own mapping to store stores in
+    mapping(address => mapping(bytes32 => Store)) private stores;
+    // stores can be retreived via an unordered array of bytes32 keys
+    mapping(address => bytes32[]) private storeIdLists;
+
+    // balances of storeOwners
+    mapping(address => uint256) public balances;
 
     /// @dev modifier, verifies that caller is owner
     modifier onlyOwner() {
@@ -22,6 +62,12 @@ contract Marketplace {
     /// @dev modifier, verifies that caller is admin
     modifier onlyAdmin() {
         require(admins[msg.sender], "caller is not admin");
+        _;
+    }
+
+    /// @dev modifier, verifies that caller is store owner
+    modifier onlyStoreOwner() {
+        require(storeOwners[msg.sender], "caller is not store owner");
         _;
     }
     
@@ -54,24 +100,24 @@ contract Marketplace {
 
     /// @notice add shopowner
     /// @dev only callable by admins
-    /// @param _newShopOwner address of account to be added as shopowner
-    function addShopOwner(address _newShopOwner) external onlyAdmin {
+    /// @param _newStoreOwner address of account to be added as shopowner
+    function addStoreOwner(address _newStoreOwner) external onlyAdmin {
         // only emit event if shopowner is not added yet
-        if (!shopOwners[_newShopOwner]) {
-            emit addedShopOwner(_newShopOwner, msg.sender);
+        if (!storeOwners[_newStoreOwner]) {
+            emit addedStoreOwner(_newStoreOwner, msg.sender);
         }
-        shopOwners[_newShopOwner] = true;
+        storeOwners[_newStoreOwner] = true;
     }
 
     /// @notice remove shopowner
     /// @dev only callable by admins
-    /// @param _shopOwner address of account to be removed as shopowner
-    function removeShopOwner(address _shopOwner) external onlyAdmin {
+    /// @param _storeOwner address of account to be removed as shopowner
+    function removeStoreOwner(address _storeOwner) external onlyAdmin {
         // only emit event if shopowner is not removed yet
-        if (shopOwners[_shopOwner]) {
-            emit removedShopOwner(_shopOwner, msg.sender);
+        if (storeOwners[_storeOwner]) {
+            emit removedStoreOwner(_storeOwner, msg.sender);
         }
-        shopOwners[_shopOwner] = false;
+        storeOwners[_storeOwner] = false;
     }
     
 }
