@@ -7,8 +7,8 @@ contract('Marketplace', accounts => {
     owner = accounts[0];
     admin1 = accounts[1];
     admin2 = accounts[2];
-    shopOwner1 = accounts[3];
-    shopOwner2 = accounts[4];
+    storeOwner1 = accounts[3];
+    storeOwner2 = accounts[4];
     instance = await Marketplace.new({ from: owner });
   });
 
@@ -58,39 +58,39 @@ contract('Marketplace', accounts => {
   it('should add shopowners correctly', async () => {
     // try to add shopowner from a non-admin account, should fail
     await truffleAssert.fails(
-      instance.addShopOwner(shopOwner1, { from: shopOwner2 }),
+      instance.addStoreOwner(storeOwner1, { from: storeOwner2 }),
       truffleAssert.ErrorType.REVERT,
       'caller is not admin',
       'should have failed, should only be callable by admins'
     );
 
     // add shopowners by admin
-    result = await instance.addShopOwner(shopOwner1, { from: admin1 });
-    await instance.addShopOwner(shopOwner2, { from: admin1 });
-    // check if addedShopOwner event was emitted
+    result = await instance.addStoreOwner(storeOwner1, { from: admin1 });
+    await instance.addStoreOwner(storeOwner2, { from: admin1 });
+    // check if addedStoreOwner event was emitted
     truffleAssert.eventEmitted(
       result,
-      'addedShopOwner',
+      'addedStoreOwner',
       params => {
-        return params.shopOwner === shopOwner1 && params.admin === admin1;
+        return params.storeOwner === storeOwner1 && params.admin === admin1;
       },
-      'addedShopOwner event should be emitted with shopOwner1 and admin as parameter'
+      'addedStoreOwner event should be emitted with storeOwner1 and admin as parameter'
     );
 
-    // event should not fire if addShopOwner is called and shopOwner is already added
-    result = await instance.addShopOwner(shopOwner1, { from: admin1 });
+    // event should not fire if addStoreOwner is called and storeOwner is already added
+    result = await instance.addStoreOwner(storeOwner1, { from: admin1 });
     truffleAssert.eventNotEmitted(
       result,
-      'addedShopOwner',
+      'addedStoreOwner',
       null,
-      'addedShopOwner should not be emitted'
+      'addedStoreOwner should not be emitted'
     );
 
     // check if shopowners were added
-    var isShopOwner = await instance.shopOwners.call(shopOwner1);
-    assert.equal(isShopOwner, true, 'shopowner1 should have been added');
-    isShopOwner = await instance.shopOwners.call(shopOwner2);
-    assert.equal(isShopOwner, true, 'shopowner2 should have been added');
+    var isStoreOwner = await instance.storeOwners.call(storeOwner1);
+    assert.equal(isStoreOwner, true, 'shopowner1 should have been added');
+    isStoreOwner = await instance.storeOwners.call(storeOwner2);
+    assert.equal(isStoreOwner, true, 'shopowner2 should have been added');
   });
 
   it('should remove admins correctly', async () => {
@@ -128,35 +128,35 @@ contract('Marketplace', accounts => {
   it('should remove shopowners correctly', async () => {
     // try to remove shopowner from a non-admin account, should fail
     await truffleAssert.fails(
-      instance.removeShopOwner(shopOwner2, { from: shopOwner1 }),
+      instance.removeStoreOwner(storeOwner2, { from: storeOwner1 }),
       truffleAssert.ErrorType.REVERT,
       'caller is not admin',
       'should have failed, should only be callable by admins'
     );
 
     // remove shopowners by admin
-    result = await instance.removeShopOwner(shopOwner2, { from: admin1 });
-    // check if removedShopOwner event was emitted
+    result = await instance.removeStoreOwner(storeOwner2, { from: admin1 });
+    // check if removedStoreOwner event was emitted
     truffleAssert.eventEmitted(
       result,
-      'removedShopOwner',
+      'removedStoreOwner',
       params => {
-        return params.shopOwner === shopOwner2 && params.admin === admin1;
+        return params.storeOwner === storeOwner2 && params.admin === admin1;
       },
-      'removedShopOwner event should be emitted with shopOwner2 and admin as parameter'
+      'removedStoreOwner event should be emitted with storeOwner2 and admin as parameter'
     );
 
-    // event should not fire if removeShopOwner is called and shopOwner is already removed
-    result = await instance.removeShopOwner(shopOwner2, { from: admin1 });
+    // event should not fire if removeStoreOwner is called and storeOwner is already removed
+    result = await instance.removeStoreOwner(storeOwner2, { from: admin1 });
     truffleAssert.eventNotEmitted(
       result,
-      'removedShopOwner',
+      'removedStoreOwner',
       null,
-      'removedShopOwner should not be emitted'
+      'removedStoreOwner should not be emitted'
     );
 
     // check if shopowner was removed
-    let isShopOwner = await instance.shopOwners.call(shopOwner2);
-    assert.equal(isShopOwner, false, 'shopowner2 should have been added');
+    let isStoreOwner = await instance.storeOwners.call(storeOwner2);
+    assert.equal(isStoreOwner, false, 'shopowner2 should have been added');
   });
 });
