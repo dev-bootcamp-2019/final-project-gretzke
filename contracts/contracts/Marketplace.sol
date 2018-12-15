@@ -1,10 +1,12 @@
 pragma solidity 0.4.24;
 // pragma experimental ABIEncoderV2;
 
+import "zeppelin/contracts/math/SafeMath.sol";
+
 /// @title Marketplace
 /// @author Daniel Gretzke
 contract Marketplace {
-    
+    using SafeMath for uint256;
     // owner, admin, storeOwner variables
     address public owner;
     mapping(address => bool) public admins;
@@ -41,6 +43,7 @@ contract Marketplace {
         // ipfs hash (placeholder, needs to be adjusted to real ipfs hashes)
         bytes32 image;
         uint256 price;
+        uint256 stock;
         // index inside itemIdList array for cheap deletion of items
         uint256 index;
         bool active;
@@ -137,7 +140,8 @@ contract Marketplace {
         require(!stores[msg.sender][ID].active, "store with same name/id already active");
 
         // push newly generated ID to store id list
-        uint256 index = storeIdLists[msg.sender].push(ID) - 1;
+        // save new length -1 as index
+        uint256 index = storeIdLists[msg.sender].push(ID).sub(1);
 
         // generate new store in stores mapping
         stores[msg.sender][ID] = Store({
