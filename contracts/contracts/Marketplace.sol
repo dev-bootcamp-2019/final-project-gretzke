@@ -178,7 +178,7 @@ contract Marketplace {
         bytes32[] storage storeIdList = storeIdLists[msg.sender];
 
         // ensure that there is no active store with same ID
-        require(!store.active, "store with same id already active");
+        assert(!store.active);
 
         // push newly generated ID to store id list
         // save new length -1 as index
@@ -246,7 +246,7 @@ contract Marketplace {
         // ensure that parent store is active
         require(stores[msg.sender][_storeID].active, "store is not active");
         // ensure that there is no active item with same ID
-        require(!item.active, "item with same id already active");
+        assert(!item.active);
 
         // push newly generated ID to item id list
         // save new length -1 as index
@@ -347,17 +347,20 @@ contract Marketplace {
     /// @return description of store
     /// @return bytes32 array of item IDs belongig to store
     /// @return index of store in store id list
+    /// @return bool flag whether store is active
     function getStore(address _storeOwner, bytes32 _storeID) public view returns(
         string name, 
         string description, 
         bytes32[] itemIdList, 
-        uint256 index
+        uint256 index,
+        bool active
     ) {
         Store memory store = stores[_storeOwner][_storeID];
         name = store.name;
         description = store.description;
         itemIdList = store.itemIdList;
         index = store.index;
+        active = store.active;
     }
 
     /// @notice return item list of store belonging to a store owner
@@ -375,20 +378,26 @@ contract Marketplace {
     /// @return description of item
     /// @return ipfs hash of image
     /// @return price of item
+    /// @return available quantity of item
     /// @return index of item in item id list
+    /// @return bool flag whether item is active
     function getItem(address _storeOwner, bytes32 _storeID, bytes32 _itemID) public view returns(
         string name,
         string description,
         bytes32 image,
         uint256 price,
-        uint256 index
+        uint256 stock,
+        uint256 index,
+        bool active
     ) {
         Item memory item = stores[_storeOwner][_storeID].items[_itemID];
         name = item.name;
         description = item.description;
         image = item.image;
         price = item.price;
+        stock = item.stock;
         index = item.index;
+        active = item.active;
     }
 
 }
