@@ -211,6 +211,7 @@ contract Marketplace {
         
         // copy last index of store id list to index of to be removed store and delete last item of array
         storeIdList[store.index] = storeIdList[storeIdList.length-1];
+        storeIdList.length--;
         // remove items from store
         store.itemIdList.length = 0;
         store.active = false;
@@ -284,6 +285,7 @@ contract Marketplace {
         
         // copy last index of item id list to index of to be removed item and delete last item of array
         itemIdList[item.index] = itemIdList[itemIdList.length-1];
+        itemIdList.length--;
         item.active = false;
 
         emit RemovedItem(msg.sender, _storeID, _itemID);
