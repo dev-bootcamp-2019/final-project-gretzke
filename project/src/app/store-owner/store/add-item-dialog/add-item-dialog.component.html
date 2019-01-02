@@ -1,0 +1,42 @@
+<h1 mat-dialog-title>Add new item</h1>
+<div mat-dialog-content>
+  <form [formGroup]="addControl">
+    <mat-form-field class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" [errorStateMatcher]="matcher" type="text" autocomplete="off">
+      <mat-error *ngIf="addControl.get('name').hasError('required')">Name is <strong>required</strong></mat-error>
+    </mat-form-field>
+    <br>
+    <mat-form-field class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" [errorStateMatcher]="matcher"></textarea>
+      <mat-error *ngIf="addControl.get('description').hasError('required')">Description is <strong>required</strong></mat-error>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Price</mat-label>
+      <input matInput name="price" formControlName="price" [errorStateMatcher]="matcher" type="number" min="0"
+        autocomplete="off">
+      <mat-hint>in ETH</mat-hint>
+      <mat-error *ngIf="addControl.get('price').hasError('required') || addControl.get('price').hasError('value negative')">Price
+        is <strong>invalid</strong></mat-error>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Image</mat-label>
+      <input matInput name="image" formControlName="image" [errorStateMatcher]="matcher" type="text" autocomplete="off">
+      <mat-hint>IPFS hash</mat-hint>
+      <mat-error *ngIf="addControl.get('image').hasError('required')">Image is <strong>required</strong></mat-error>
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Stock</mat-label>
+      <input matInput name="stock" formControlName="stock" [errorStateMatcher]="matcher" type="number" min="0"
+        autocomplete="off">
+      <mat-hint>number of available items</mat-hint>
+      <mat-error *ngIf="addControl.get('stock').hasError('required') || addControl.get('stock').hasError('stock invalid') || addControl.get('stock').hasError('value negative')">Stock
+        is <strong>invalid</strong></mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">Close</button>
+  <button mat-button [mat-dialog-close]="addControl.value" cdkFocusInitial>Add</button>
+</div>

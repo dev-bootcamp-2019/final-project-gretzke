@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Add new store</h1>
+<div mat-dialog-content>
+  <form [formGroup]="addControl">
+    <mat-form-field class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" [errorStateMatcher]="matcher" type="text" autocomplete="off">
+      <mat-error *ngIf="addControl.get('name').hasError('required')">Name is <strong>required</strong></mat-error>
+    </mat-form-field>
+    <br>
+    <mat-form-field class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" [errorStateMatcher]="matcher"></textarea>
+      <mat-error *ngIf="addControl.get('description').hasError('required')">Description is <strong>required</strong></mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">Close</button>
+  <button mat-button [mat-dialog-close]="addControl.value" cdkFocusInitial>Add</button>
+</div>

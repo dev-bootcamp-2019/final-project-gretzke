@@ -1,0 +1,35 @@
+<!-- SUB HEADER -->
+<mat-toolbar *ngIf="smartContract.storeOwners.length > 1">
+  <span style="margin-right: 15px">Choose main store owner account:</span>
+  <mat-form-field style="width: 500px;">
+    <mat-select [value]="smartContract.storeOwner">
+      <mat-option *ngFor="let storeOwner of smartContract.storeOwners" [value]="storeOwner" (click)="smartContract.storeOwner = storeOwner">{{storeOwner}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-toolbar>
+
+<!-- CONTENT -->
+<div class="content">
+  <h1>Store Owner Overview</h1>
+  <button mat-raised-button color="primary" (click)="addStore()">
+    <mat-icon>add</mat-icon>
+    Add Store
+  </button>
+  <div class="fl-right" *ngIf="balance !== undefined">
+    <span style="margin-right: 15px">Balance: {{ balance }} ETH</span>
+    <button mat-raised-button color="primary" (click)="smartContract.withdraw()">Withdraw</button>
+  </div>
+  <div class="spinner" *ngIf="stores === undefined">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div *ngIf="stores !== undefined">
+    <mat-grid-list cols=4 rowHeight="150px">
+      <mat-grid-tile *ngFor="let store of storeIdList" [routerLink]="['/storeowner', store]">
+        <mat-card class="full-width">
+          <mat-card-title>{{ stores[store].name }}</mat-card-title>
+          <mat-card-subtitle style="height:50px; overflow:auto">{{ stores[store].description }}</mat-card-subtitle>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>

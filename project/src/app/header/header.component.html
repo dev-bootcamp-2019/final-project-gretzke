@@ -1,0 +1,16 @@
+<mat-toolbar color="primary">
+  <span>Marketplace</span>
+  <span class="fill-remaining-space"></span>
+  <span style="margin-right: 15px">Browsing Marketplace as</span>
+  <mat-form-field>
+    <mat-select value="customer">
+      <mat-option value="customer" (click)="navigate('/')">Customer</mat-option>
+      <mat-option value="storeOwner" (click)="navigate('/storeowner')" [disabled]="smartContract.storeOwners.length === 0">Store
+        Owner</mat-option>
+      <mat-option value="admin" (click)="navigate('/admin')" [disabled]="smartContract.admins.length === 0">Administrator</mat-option>
+      <mat-option value="Owner" (click)="navigate('/owner')" [disabled]="smartContract.owner === undefined">Owner</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-icon style="margin-left: 15px" matTooltip="Only admins and store owners can manage store owners and stores. Please request permission from the marketplace owner"
+    matTooltipPosition="left">help_outline</mat-icon>
+</mat-toolbar>

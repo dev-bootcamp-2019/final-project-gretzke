@@ -1,0 +1,28 @@
+<div *ngIf="item === undefined" class="spinner">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="content" *ngIf="item !== undefined">
+  <h1>{{ item?.name }}
+    <span style="color:red" *ngIf="!item?.active">
+      <mat-icon>warning</mat-icon> INACTIVE
+    </span>
+  </h1>
+  <mat-divider></mat-divider>
+  <p>{{ item?.description }}</p>
+  <button mat-raised-button color="primary" (click)="restockItem()">
+    <mat-icon>settings_backup_restore</mat-icon>
+    Restock Item
+  </button>
+  <button mat-raised-button color="primary" (click)="changePrice()" style="margin-left: 15px;">
+    <mat-icon>attach_money</mat-icon>
+    Change Price
+  </button>
+  <button mat-raised-button color="warn" style="float: right" (click)="removeItem()">
+    <mat-icon>delete</mat-icon>
+    Remove Item
+  </button>
+  <p>ID: {{ itemID }}</p>
+  <p>Price: {{ itemPrice() }} ETH</p>
+  <p>Stock: {{ item.stock }}</p>
+
+</div>

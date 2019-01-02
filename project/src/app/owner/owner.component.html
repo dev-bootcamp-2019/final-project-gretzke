@@ -1,0 +1,56 @@
+<div class="content">
+  <h1>Owner Overview</h1><br>
+  <h2 style="margin-bottom: 0px">Add Admin</h2>
+  <form>
+    <mat-form-field appearance="standard" class="address-input">
+      <mat-label>Enter Ethereum Address</mat-label>
+      <input matInput id="add" [formControl]="addControl" [errorStateMatcher]="matcher" placeholder="Ethereum Address"
+        type="text" autocomplete="off">
+      <mat-hint>Address to be added as admin</mat-hint>
+      <mat-error *ngIf="validateAddress('add')">
+        Address is <strong>invalid</strong>
+      </mat-error>
+      <mat-error *ngIf="addControl.hasError('required')">
+        Address is <strong>required</strong>
+      </mat-error>
+      <button matSuffix mat-button [disabled]="validateAddress('add') || addControl.hasError('required')" (click)="addAdmin()">Add</button>
+    </mat-form-field>
+  </form>
+  <br>
+  <h2 style="margin-bottom: 0px">Remove Admin</h2>
+  <form>
+    <mat-form-field appearance="standard" class="address-input">
+      <mat-label>Enter Ethereum Address</mat-label>
+      <input matInput id="remove" [formControl]="removeControl" [errorStateMatcher]="matcher" placeholder="Ethereum Address"
+        type="text" autocomplete="off">
+      <mat-hint>Address to be removed as admin</mat-hint>
+      <mat-error *ngIf="validateAddress('remove')">
+        Address is <strong>invalid</strong>
+      </mat-error>
+      <mat-error *ngIf="removeControl.hasError('required')">
+        Address is <strong>required</strong>
+      </mat-error>
+      <button matSuffix mat-button [disabled]="validateAddress('remove') || removeControl.hasError('required')" (click)="removeAdmin()">Remove</button>
+    </mat-form-field>
+  </form>
+  <br>
+  <h2 style="margin-bottom: 0px">Check if Address is Admin</h2>
+  <form>
+    <mat-form-field appearance="standard" class="address-input">
+      <mat-label>Enter Ethereum Address</mat-label>
+      <input matInput [formControl]="checkControl" [errorStateMatcher]="matcher" placeholder="Ethereum Address" type="text"
+        autocomplete="off">
+      <mat-hint>Enter address to be checked</mat-hint>
+      <mat-error *ngIf="validateAddress('check')">
+        Address is <strong>invalid</strong>
+      </mat-error>
+      <mat-error *ngIf="checkControl.hasError('required')">
+        Address is <strong>required</strong>
+      </mat-error>
+      <mat-error *ngIf="checkControl.hasError('not admin')">
+        Address is <strong>not an admin</strong>
+      </mat-error>
+      <mat-icon matSuffix *ngIf="!(validateAddress('check') || checkControl.hasError('required') || checkControl.hasError('not admin'))">check_circle_outline</mat-icon>
+    </mat-form-field>
+  </form>
+</div>

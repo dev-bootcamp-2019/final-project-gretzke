@@ -58,6 +58,7 @@ contract Marketplace {
     event Purchase(address indexed storeOwner, bytes32 indexed storeID, bytes32 itemID, address indexed customer, uint256 price);
     event Withdrawal(address indexed storeOwner, uint256 amount);
     event Restocking(address indexed storeOwner, bytes32 indexed storeID, bytes32 indexed itemID, uint256 amount);
+    event PriceChange(address indexed storeOwner, bytes32 indexed storeID, bytes32 indexed itemID, uint256 newPrice);
 
     // store and item structs
     struct Store {
@@ -298,6 +299,8 @@ contract Marketplace {
     function purchase(address _storeOwner, bytes32 _storeID, bytes32 _itemID) public payable returns (bool) {
         // storage pointer to item
         Item storage item = stores[_storeOwner][_storeID].items[_itemID];
+        // parent store has to be active
+        require(stores[_storeOwner][_storeID].active, "store has to be active");
         // check if provided value matches price
         require(msg.value == item.price, "sent value does not match price");
         // check if item is available
@@ -311,12 +314,13 @@ contract Marketplace {
     }
 
     /// @notice allows withdrawal of balance
-    /// @param _amount amount to withdraw
     /// @return true on success, false on failure
-    function withdraw(uint256 _amount) public returns (bool) {
-        balances[msg.sender] = balances[msg.sender].sub(_amount);
-        msg.sender.transfer(_amount);
-        emit Withdrawal(msg.sender, _amount);
+    function withdraw() public returns (bool) {
+        uint256 balance = balances[msg.sender];
+        require(balance > 0, "no balance");
+        balances[msg.sender] = 0;
+        msg.sender.transfer(balance);
+        emit Withdrawal(msg.sender, balance);
         return true;
     }
 
@@ -328,8 +332,25 @@ contract Marketplace {
     function restock(bytes32 _storeID, bytes32 _itemID, uint256 _amount) public onlyStoreOwner returns(bool) {
         // storage pointer to item
         Item storage item = stores[msg.sender][_storeID].items[_itemID];
+        // ensure that parent store is active
+        require(stores[msg.sender][_storeID].active, "store is not active");
         item.stock = item.stock.add(_amount);
         emit Restocking(msg.sender, _storeID, _itemID, _amount);
+        return true;
+    }
+
+    /// @notice changes item of an item
+    /// @param _storeID ID of store
+    /// @param _itemID ID of item
+    /// @param _price new price
+    /// @return true on success, false on failure
+    function changePrice(bytes32 _storeID, bytes32 _itemID, uint256 _price) public onlyStoreOwner returns(bool) {
+        // storage pointer to item
+        Item storage item = stores[msg.sender][_storeID].items[_itemID];
+        // ensure that parent store is active
+        require(stores[msg.sender][_storeID].active, "store is not active");
+        item.price = _price;
+        emit PriceChange(msg.sender, _storeID, _itemID, _price);
         return true;
     }
 

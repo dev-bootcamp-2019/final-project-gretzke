@@ -1,0 +1,35 @@
+<div *ngIf="store === undefined" class="spinner">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="content" *ngIf="store !== undefined">
+  <h1>{{ store?.name }}
+    <span style="color:red" *ngIf="!store?.active">
+      <mat-icon>warning</mat-icon> INACTIVE
+    </span>
+  </h1>
+  <mat-divider></mat-divider>
+  <p>{{ store?.description }}</p>
+  <p>ID: {{ storeID }}</p>
+  <button mat-raised-button color="primary" (click)="addItem()">
+    <mat-icon>add</mat-icon>
+    Add Item
+  </button>
+  <button mat-raised-button color="warn" style="float: right" (click)="removeStore()">
+    <mat-icon>delete</mat-icon>
+    Remove Store
+  </button>
+  <div class="spinner" *ngIf="items === undefined">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div *ngIf="items !== undefined">
+    <p *ngIf="store?.itemIdList.length === 0">This store has no items</p>
+    <mat-grid-list cols=4 rowHeight="150px">
+      <mat-grid-tile *ngFor="let item of store?.itemIdList" [routerLink]="['/storeowner', storeID, item]">
+        <mat-card class="full-width">
+          <mat-card-title>{{ items[item]?.name }}</mat-card-title>
+          <mat-card-subtitle style="height:50px; overflow:auto">{{ items[item]?.description }}</mat-card-subtitle>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>
