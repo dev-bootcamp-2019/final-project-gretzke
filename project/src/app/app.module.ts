@@ -28,6 +28,8 @@ import { AddStoreDialogComponent } from './store-owner/add-store-dialog/add-stor
 import { StoreComponent } from './store-owner/store/store.component';
 import { ItemComponent } from './store-owner/store/item/item.component';
 import { AddItemDialogComponent } from './store-owner/store/add-item-dialog/add-item-dialog.component';
+import { RestockItemDialogComponent } from './store-owner/store/item/restock-item-dialog/restock-item-dialog.component';
+import { ChangePriceDialogComponent } from './store-owner/store/item/change-price-dialog/change-price-dialog.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { AddItemDialogComponent } from './store-owner/store/add-item-dialog/add-
     AddStoreDialogComponent,
     StoreComponent,
     ItemComponent,
-    AddItemDialogComponent
+    AddItemDialogComponent,
+    RestockItemDialogComponent,
+    ChangePriceDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +65,12 @@ import { AddItemDialogComponent } from './store-owner/store/add-item-dialog/add-
     MatSnackBarModule,
     MatProgressSpinnerModule
   ],
-  entryComponents: [AddStoreDialogComponent, AddItemDialogComponent],
+  entryComponents: [
+    AddStoreDialogComponent,
+    AddItemDialogComponent,
+    RestockItemDialogComponent,
+    ChangePriceDialogComponent
+  ],
   providers: [SmartContractService],
   bootstrap: [AppComponent]
 })

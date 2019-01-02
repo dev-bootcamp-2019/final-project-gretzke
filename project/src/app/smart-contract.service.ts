@@ -253,6 +253,16 @@ export class SmartContractService {
     });
   }
 
+  async removeItem(storeID: string, itemID: string) {
+    const gas = await this.Marketplace.removeItem.estimateGas(storeID, itemID, {
+      from: this.storeOwner
+    });
+    this.Marketplace.removeItem(storeID, itemID, {
+      from: this.storeOwner,
+      gas: gas
+    });
+  }
+
   async getStores() {
     if (this.Marketplace === undefined || this.storeOwner === undefined) {
       return;
@@ -336,5 +346,22 @@ export class SmartContractService {
       throw new Error('no store owner account set');
     }
     this.Marketplace.withdraw({ from: this.storeOwner });
+  }
+
+  restock(storeID: string, itemID: string, amount: string) {
+    if (this.Marketplace === undefined || this.storeOwner === undefined) {
+      throw new Error('no store owner account set');
+    }
+    this.Marketplace.restock(storeID, itemID, amount, {
+      from: this.storeOwner
+    });
+  }
+  changePrice(storeID: string, itemID: string, newPrice: string) {
+    if (this.Marketplace === undefined || this.storeOwner === undefined) {
+      throw new Error('no store owner account set');
+    }
+    this.Marketplace.changePrice(storeID, itemID, newPrice, {
+      from: this.storeOwner
+    });
   }
 }

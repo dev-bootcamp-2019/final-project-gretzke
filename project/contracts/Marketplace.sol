@@ -280,7 +280,7 @@ contract Marketplace {
         // ensure that parent store is active
         require(stores[msg.sender][_storeID].active, "store is not active");
         // item has to be active in order to be removed
-        require(item.active, "store currently not active");
+        require(item.active, "item not active");
 
         // copy last index of item id list to index of to be removed item and delete last item of array
         itemIdList[item.index] = itemIdList[itemIdList.length-1];
@@ -334,6 +334,8 @@ contract Marketplace {
         Item storage item = stores[msg.sender][_storeID].items[_itemID];
         // ensure that parent store is active
         require(stores[msg.sender][_storeID].active, "store is not active");
+        // ensure that item is still active
+        require(item.active, "item is not active");
         item.stock = item.stock.add(_amount);
         emit Restocking(msg.sender, _storeID, _itemID, _amount);
         return true;
@@ -349,6 +351,8 @@ contract Marketplace {
         Item storage item = stores[msg.sender][_storeID].items[_itemID];
         // ensure that parent store is active
         require(stores[msg.sender][_storeID].active, "store is not active");
+        // ensure that item is still active
+        require(item.active, "item is not active");
         item.price = _price;
         emit PriceChange(msg.sender, _storeID, _itemID, _price);
         return true;

@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Restock Item</h1>
+<div mat-dialog-content>
+  <form>
+    <mat-form-field class="full-width">
+      <mat-label>Quantity added to stock</mat-label>
+      <input matInput [formControl]="restockControl" [errorStateMatcher]="matcher" min="0" type="number" autocomplete="off">
+      <mat-error *ngIf="restockControl.hasError('required') || restockControl.hasError('stock invalid') || restockControl.hasError('value negative')">
+        Stock is <strong>invalid</strong></mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">Close</button>
+  <button mat-button [mat-dialog-close]="restockControl.value" cdkFocusInitial>OK</button>
+</div>
