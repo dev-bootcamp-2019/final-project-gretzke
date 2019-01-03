@@ -1,3 +1,8 @@
 .full-width {
   width: 85%
 }
+
+img {
+  height: 250px;
+  object-fit: cover
+}

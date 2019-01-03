@@ -1378,8 +1378,8 @@
     "55555": {
       "events": {},
       "links": {},
-      "address": "0x1ad695a4ee5bf8e8e768b8c43b2da5d135e7d310",
-      "transactionHash": "0xcad4bddb8052cc8476df25c4f4f62f76debc2344abb452819895f4befa1edb50"
+      "address": "0xdb8238be4f7dffad57755998c71a94a54ccb3a1e",
+      "transactionHash": "0x637872afc49a2c03509b96c6554f16451be3e368f5e3dfef583ce0e56d4c17b3"
     },
     "1545608271130": {
       "events": {},
@@ -1389,5 +1389,5 @@
     }
   },
   "schemaVersion": "2.0.2",
-  "updatedAt": "2019-01-02T23:35:36.421Z"
+  "updatedAt": "2019-01-03T23:33:13.637Z"
 }

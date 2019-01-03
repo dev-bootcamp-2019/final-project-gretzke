@@ -1,0 +1,9 @@
+img {
+  float: right;
+  max-width: 35%;
+  width: auto;
+  max-height: 400px;
+  object-fit: cover;
+  margin-left: 20px;
+  margin-top: 20px;
+}

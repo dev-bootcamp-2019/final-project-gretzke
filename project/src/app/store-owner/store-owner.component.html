@@ -11,7 +11,7 @@
 <!-- CONTENT -->
 <div class="content">
   <h1>Store Owner Overview</h1>
-  <button mat-raised-button color="primary" (click)="addStore()">
+  <button mat-raised-button color="primary" *ngIf="smartContract.storeOwner !== undefined" (click)="addStore()">
     <mat-icon>add</mat-icon>
     Add Store
   </button>
@@ -23,6 +23,7 @@
     <mat-spinner></mat-spinner>
   </div>
   <div *ngIf="stores !== undefined">
+    <p *ngIf="storeIdList.length === 0">This store owner has no stores</p>
     <mat-grid-list cols=4 rowHeight="150px">
       <mat-grid-tile *ngFor="let store of storeIdList" [routerLink]="['/storeowner', store]">
         <mat-card class="full-width">

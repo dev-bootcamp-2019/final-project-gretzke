@@ -210,7 +210,10 @@ contract Marketplace {
         require(store.active, "store currently not active");
 
         // copy last index of store id list to index of to be removed store and delete last item of array
+        uint256 index = store.index;
         storeIdList[store.index] = storeIdList[storeIdList.length-1];
+        // set index of copied item
+        stores[msg.sender][storeIdList[index]].index = index;
         storeIdList.length--;
         // remove items from store
         store.itemIdList.length = 0;
@@ -283,7 +286,10 @@ contract Marketplace {
         require(item.active, "item not active");
 
         // copy last index of item id list to index of to be removed item and delete last item of array
-        itemIdList[item.index] = itemIdList[itemIdList.length-1];
+        uint256 index = item.index;
+        itemIdList[index] = itemIdList[itemIdList.length-1];
+        // set index of copied item
+        stores[msg.sender][_storeID].items[itemIdList[index]].index = index;
         itemIdList.length--;
         item.active = false;
 
@@ -356,6 +362,13 @@ contract Marketplace {
         item.price = _price;
         emit PriceChange(msg.sender, _storeID, _itemID, _price);
         return true;
+    }
+
+    /// @notice lets owner set a featured store owner
+    /// @param _index index inside featuredStoreOwners array
+    /// @param _storeOwner address of store owner to be featured
+    function setFeaturedStoreOwner(uint256 _index, address _storeOwner) public onlyOwner {
+        featuredStoreOwners[_index] = _storeOwner;
     }
 
     /// @notice return list of stores belonging to a store owner

@@ -160,7 +160,7 @@ export class SmartContractService {
     if (admins.length === 1) {
       this.admin = admins[0];
     }
-    if (storeOwners.length > 1) {
+    if (storeOwners.length === 1) {
       this.storeOwner = storeOwners[0];
     }
     this.owner = owner;
@@ -283,7 +283,7 @@ export class SmartContractService {
         name: result[0],
         description: result[1],
         itemIdList: result[2],
-        index: result[3],
+        index: result[3].toString(),
         active: result[4]
       };
     }

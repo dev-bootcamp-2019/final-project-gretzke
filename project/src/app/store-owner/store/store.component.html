@@ -23,11 +23,18 @@
   </div>
   <div *ngIf="items !== undefined">
     <p *ngIf="store?.itemIdList.length === 0">This store has no items</p>
-    <mat-grid-list cols=4 rowHeight="150px">
+    <mat-grid-list cols=4 rowHeight="420px">
       <mat-grid-tile *ngFor="let item of store?.itemIdList" [routerLink]="['/storeowner', storeID, item]">
         <mat-card class="full-width">
-          <mat-card-title>{{ items[item]?.name }}</mat-card-title>
-          <mat-card-subtitle style="height:50px; overflow:auto">{{ items[item]?.description }}</mat-card-subtitle>
+          <mat-card-header>
+            <mat-card-title>{{ items[item]?.name }}</mat-card-title>
+          </mat-card-header>
+          <img mat-card-image [src]="'https://ipfs.io/ipfs/' + items[item]?.image" alt="Item photo">
+          <mat-card-content style="height:50px; overflow:auto">
+            <p>
+              {{ items[item]?.description }}
+            </p>
+          </mat-card-content>
         </mat-card>
       </mat-grid-tile>
     </mat-grid-list>
