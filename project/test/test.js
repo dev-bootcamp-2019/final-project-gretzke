@@ -1,5 +1,4 @@
 const truffleAssert = require('truffle-assertions');
-const axios = require('axios');
 
 const Marketplace = artifacts.require('Marketplace.sol');
 const Utility = artifacts.require('Utility.sol');
