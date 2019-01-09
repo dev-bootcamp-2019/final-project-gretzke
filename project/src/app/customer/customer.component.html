@@ -25,7 +25,7 @@
       <mat-error *ngIf="storeOwnerControl.hasError('required')">
         Address is <strong>required</strong>
       </mat-error>
-      <button matSuffix mat-button [disabled]="validateAddress() || storeOwnerControl.hasError('required')" (click)="navigate(storeOwnerControl.value)">Add</button>
+      <button matSuffix mat-button [disabled]="validateAddress() || storeOwnerControl.hasError('required')" (click)="navigate(storeOwnerControl.value)">Visit</button>
     </mat-form-field>
   </form>
   <br>
