@@ -34,7 +34,6 @@ import { ChangePriceDialogComponent } from './store-owner/store/item/change-pric
 import { CStoreownerComponent } from './customer/c-storeowner/c-storeowner.component';
 import { CStoreComponent } from './customer/c-storeowner/c-store/c-store.component';
 import { CItemComponent } from './customer/c-storeowner/c-store/c-item/c-item.component';
-import { APP_BASE_HREF } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -80,7 +79,7 @@ import { APP_BASE_HREF } from '@angular/common';
     RestockItemDialogComponent,
     ChangePriceDialogComponent
   ],
-  providers: [SmartContractService, { provide: APP_BASE_HREF, useValue: '/' }],
+  providers: [SmartContractService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
