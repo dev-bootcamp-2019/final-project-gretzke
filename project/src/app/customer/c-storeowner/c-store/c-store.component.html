@@ -1,0 +1,34 @@
+<div *ngIf="store === undefined" class="spinner">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="content" *ngIf="store !== undefined">
+  <h1>{{ store?.name }}
+    <span style="color:red" *ngIf="!store?.active">
+      <mat-icon>warning</mat-icon> INACTIVE
+    </span>
+  </h1>
+  <mat-divider></mat-divider>
+  <p>{{ store?.description }}</p>
+  <p>ID: {{ storeID }}</p>
+  <div class="spinner" *ngIf="items === undefined">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div *ngIf="items !== undefined">
+    <p *ngIf="store?.itemIdList.length === 0">This store has no items</p>
+    <mat-grid-list cols=4 rowHeight="420px">
+      <mat-grid-tile *ngFor="let item of store?.itemIdList" [routerLink]="[item]">
+        <mat-card class="full-width">
+          <mat-card-header>
+            <mat-card-title>{{ items[item]?.name }}</mat-card-title>
+          </mat-card-header>
+          <img mat-card-image [src]="'https://ipfs.io/ipfs/' + items[item]?.image" alt="Item photo">
+          <mat-card-content style="height:50px; overflow:auto">
+            <p>
+              {{ items[item]?.description }}
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>

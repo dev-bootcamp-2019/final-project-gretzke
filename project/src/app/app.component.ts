@@ -49,6 +49,7 @@ export class AppComponent {
         if (!(await this.smartContract.setContract())) {
           // TODO
         }
+        this.smartContract.setFeaturedStoreOwners();
         break;
     }
 

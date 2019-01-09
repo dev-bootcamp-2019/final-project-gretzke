@@ -40,7 +40,6 @@ export class AdminComponent {
     this.addControl = new FormControl('', [
       Validators.required,
       Validators.minLength(42),
-      Validators.maxLength(42),
       this.addressValidator.bind(this),
       this.adminValidator.bind(this)
     ]);

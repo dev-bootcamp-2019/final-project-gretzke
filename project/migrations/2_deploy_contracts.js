@@ -26,12 +26,10 @@ module.exports = async function (deployer, network, accounts) {
       mp.addStoreOwner(storeOwner1, {
         from: admin1
       });
-      storeList[storeOwner1] = [];
     }).then(() => {
       mp.addStoreOwner(storeOwner2, {
         from: admin1
       });
-      storeList[storeOwner2] = [];
     }).then(() => {
       // set storeOwners as featured storeOwners
       mp.setFeaturedStoreOwner(0, storeOwner1, {
@@ -41,7 +39,7 @@ module.exports = async function (deployer, network, accounts) {
         from: owner
       });
     }).then(() => {
-      mp.addStore('Crypto Store', 'Buy cryptocurrency hardware wallets to keep your assets safe.', {
+      mp.addStore('Crypto Store', 'Buy cryptocurrency hardware wallets to keep your digital assets safe.', {
         from: storeOwner1
       }).then(result => {
         // get result from ID
@@ -78,7 +76,7 @@ module.exports = async function (deployer, network, accounts) {
             ID,
             'Ledger Blue',
             'Ledger Blue is a premium hardware wallet with an advanced user experience thanks to a large touchscreen interface. It is built around a Secure Element and includes all the security features you’d expect from a Ledger device.',
-            web3.toWei('1,36', 'ether'),
+            web3.toWei('1.36', 'ether'),
             'QmdFYu4ysdenfsX2GrYGry82Fi1Zy62HjEBNj5nwaKbrAV',
             78, {
               from: storeOwner1

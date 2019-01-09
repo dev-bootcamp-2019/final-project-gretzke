@@ -23,11 +23,6 @@ export class ItemComponent implements OnDestroy {
     public smartContract: SmartContractService,
     public dialog: MatDialog
   ) {
-    // TODO REMOVE
-    if (this.smartContract.storeOwner === undefined) {
-      this.router.navigate(['/storeowner']);
-      return;
-    }
     this.route.params.subscribe(params => {
       this.storeID = params.storeID;
       this.itemID = params.itemID;
@@ -65,20 +60,22 @@ export class ItemComponent implements OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result !== undefined) {
-        try {
-          const stock = result;
-          this.smartContract.restock(this.storeID, this.itemID, stock);
-          this.snackBar.open(
-            'Transaction was sent successfully, item will be added, once transaction has been mined',
-            'OK'
-          );
-        } catch (e) {
-          console.warn(e);
-          this.snackBar.open(
-            'There was an error sending the transaction, check console logs for more information',
-            'OK'
-          );
-        }
+        const stock = result;
+        this.smartContract
+          .restock(this.storeID, this.itemID, stock)
+          .then(() => {
+            this.snackBar.open(
+              'Transaction was completed successfully, item was restocked',
+              'OK'
+            );
+          })
+          .catch(e => {
+            console.warn(e);
+            this.snackBar.open(
+              'There was an error with the transaction, check console logs for more information',
+              'OK'
+            );
+          });
       }
     });
   }
@@ -99,13 +96,13 @@ export class ItemComponent implements OnDestroy {
             price.toString()
           );
           this.snackBar.open(
-            'Transaction was sent successfully, item will be added, once transaction has been mined',
+            'Transaction was completed successfully, price was changed',
             'OK'
           );
         } catch (e) {
           console.warn(e);
           this.snackBar.open(
-            'There was an error sending the transaction, check console logs for more information',
+            'There was an error with the transaction, check console logs for more information',
             'OK'
           );
         }
@@ -114,20 +111,22 @@ export class ItemComponent implements OnDestroy {
   }
 
   async removeItem() {
-    try {
-      await this.smartContract.removeItem(this.storeID, this.itemID);
-      this.snackBar.open(
-        'Transaction was sent successfully, store will be removed, once transaction has been mined',
-        'OK'
-      );
-      this.router.navigate(['/storeowner', this.storeID]);
-    } catch (e) {
-      console.warn(e);
-      this.snackBar.open(
-        'There was an error sending the transaction, check console logs for more information',
-        'OK'
-      );
-    }
+    this.smartContract
+      .removeItem(this.storeID, this.itemID)
+      .then(() => {
+        this.snackBar.open(
+          'Transaction was completed successfully, item was removed',
+          'OK'
+        );
+        this.router.navigate(['/storeowner', this.storeID]);
+      })
+      .catch(e => {
+        console.warn(e);
+        this.snackBar.open(
+          'There was an error with the transaction, check console logs for more information',
+          'OK'
+        );
+      });
   }
 
   ngOnDestroy() {

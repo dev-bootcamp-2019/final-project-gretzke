@@ -12,7 +12,8 @@ import {
   MatDividerModule,
   MatGridListModule,
   MatSnackBarModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatListModule
 } from '@angular/material';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -30,6 +31,9 @@ import { ItemComponent } from './store-owner/store/item/item.component';
 import { AddItemDialogComponent } from './store-owner/store/add-item-dialog/add-item-dialog.component';
 import { RestockItemDialogComponent } from './store-owner/store/item/restock-item-dialog/restock-item-dialog.component';
 import { ChangePriceDialogComponent } from './store-owner/store/item/change-price-dialog/change-price-dialog.component';
+import { CStoreownerComponent } from './customer/c-storeowner/c-storeowner.component';
+import { CStoreComponent } from './customer/c-storeowner/c-store/c-store.component';
+import { CItemComponent } from './customer/c-storeowner/c-store/c-item/c-item.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +48,10 @@ import { ChangePriceDialogComponent } from './store-owner/store/item/change-pric
     ItemComponent,
     AddItemDialogComponent,
     RestockItemDialogComponent,
-    ChangePriceDialogComponent
+    ChangePriceDialogComponent,
+    CStoreownerComponent,
+    CStoreComponent,
+    CItemComponent
   ],
   imports: [
     BrowserModule,
@@ -63,7 +70,8 @@ import { ChangePriceDialogComponent } from './store-owner/store/item/change-pric
     MatDividerModule,
     MatGridListModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatListModule
   ],
   entryComponents: [
     AddStoreDialogComponent,

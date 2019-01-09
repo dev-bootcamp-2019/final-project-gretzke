@@ -28,11 +28,6 @@ export class StoreComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // TODO REMOVE
-    if (this.smartContract.storeOwner === undefined) {
-      this.router.navigate(['/storeowner']);
-      return;
-    }
     this.route.params.subscribe(params => {
       this.storeID = params.storeID;
       this.smartContract.getStore(this.storeID).then(result => {
@@ -65,53 +60,57 @@ export class StoreComponent implements OnInit, OnDestroy {
   }
 
   async removeStore() {
-    try {
-      await this.smartContract.removeStore(this.storeID);
-      this.snackBar.open(
-        'Transaction was sent successfully, store will be removed, once transaction has been mined',
-        'OK'
-      );
-      this.router.navigate(['/storeowner']);
-    } catch (e) {
-      console.warn(e);
-      this.snackBar.open(
-        'There was an error sending the transaction, check console logs for more information',
-        'OK'
-      );
-    }
+    this.smartContract
+      .removeStore(this.storeID)
+      .then(() => {
+        this.snackBar.open(
+          'Transaction was completed successfully, store was removed',
+          'OK'
+        );
+        this.router.navigate(['/storeowner']);
+      })
+      .catch(e => {
+        console.warn(e);
+        this.snackBar.open(
+          'There was an error with the transaction, check console logs for more information',
+          'OK'
+        );
+      });
   }
 
-  addItem() {
+  async addItem() {
     const dialogRef = this.dialog.open(AddItemDialogComponent, {
       width: '500px'
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result !== undefined) {
-        try {
-          const price = this.smartContract.web3.utils.toWei(
-            result.price.toString(),
-            'ether'
-          );
-          this.smartContract.addItem(
+        const price = this.smartContract.web3.utils.toWei(
+          result.price.toString(),
+          'ether'
+        );
+        this.smartContract
+          .addItem(
             this.storeID,
             result.name,
             result.description,
             price,
             result.image,
             result.stock
-          );
-          this.snackBar.open(
-            'Transaction was sent successfully, item will be added, once transaction has been mined',
-            'OK'
-          );
-        } catch (e) {
-          console.warn(e);
-          this.snackBar.open(
-            'There was an error sending the transaction, check console logs for more information',
-            'OK'
-          );
-        }
+          )
+          .then(() => {
+            this.snackBar.open(
+              'Transaction was completed successfully, item was added',
+              'OK'
+            );
+          })
+          .catch(e => {
+            console.warn(e);
+            this.snackBar.open(
+              'There was an error with the transaction, check console logs for more information',
+              'OK'
+            );
+          });
       }
     });
   }

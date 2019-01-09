@@ -17,7 +17,7 @@
   </button>
   <div class="fl-right" *ngIf="balance !== undefined">
     <span style="margin-right: 15px">Balance: {{ balance }} ETH</span>
-    <button mat-raised-button color="primary" (click)="smartContract.withdraw()">Withdraw</button>
+    <button mat-raised-button color="primary" (click)="withdraw()">Withdraw</button>
   </div>
   <div class="spinner" *ngIf="stores === undefined">
     <mat-spinner></mat-spinner>

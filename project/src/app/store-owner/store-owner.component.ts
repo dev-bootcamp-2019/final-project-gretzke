@@ -51,26 +51,46 @@ export class StoreOwnerComponent implements OnInit, OnDestroy {
     }
   }
 
-  addStore() {
+  async withdraw() {
+    this.smartContract
+      .withdraw()
+      .then(() => {
+        this.snackBar.open(
+          'Transaction was completed successfully, ethers were withdrawn',
+          'OK'
+        );
+      })
+      .catch(e => {
+        console.warn(e);
+        this.snackBar.open(
+          'There was an error with the transaction, check console logs for more information',
+          'OK'
+        );
+      });
+  }
+
+  async addStore() {
     const dialogRef = this.dialog.open(AddStoreDialogComponent, {
       width: '500px'
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result !== undefined) {
-        try {
-          this.smartContract.addStore(result.name, result.description);
-          this.snackBar.open(
-            'Transaction was sent successfully, store will be added, once transaction has been mined',
-            'OK'
-          );
-        } catch (e) {
-          console.warn(e);
-          this.snackBar.open(
-            'There was an error sending the transaction, check console logs for more information',
-            'OK'
-          );
-        }
+        this.smartContract
+          .addStore(result.name, result.description)
+          .then(() => {
+            this.snackBar.open(
+              'Transaction was completed successfully, store was added',
+              'OK'
+            );
+          })
+          .catch(e => {
+            console.warn(e);
+            this.snackBar.open(
+              'There was an error with the transaction, check console logs for more information',
+              'OK'
+            );
+          });
       }
     });
   }

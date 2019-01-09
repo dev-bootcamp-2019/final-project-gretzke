@@ -1,0 +1,18 @@
+<div class="content">
+  <h1>Store Owner</h1>
+  <h3>{{ storeOwner }}</h3>
+  <div class="spinner" *ngIf="stores === undefined">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div *ngIf="stores !== undefined">
+    <p *ngIf="storeIdList.length === 0">This store owner has no stores</p>
+    <mat-grid-list cols=4 rowHeight="150px">
+      <mat-grid-tile *ngFor="let store of storeIdList" [routerLink]="[store]">
+        <mat-card class="full-width">
+          <mat-card-title>{{ stores[store].name }}</mat-card-title>
+          <mat-card-subtitle style="height:50px; overflow:auto">{{ stores[store].description }}</mat-card-subtitle>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>

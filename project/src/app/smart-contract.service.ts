@@ -50,20 +50,20 @@ const marketplaceArtifact = require('../../build/contracts/Marketplace.json');
 @Injectable()
 export class SmartContractService {
   public web3: any;
-  private accounts: string[];
+  public accounts: string[] = [];
   private provider: any;
   public Marketplace: any;
 
   public owner: string;
   public admin: string;
-  public admins: string[];
   public storeOwner: string;
-  public storeOwners: string[];
+  public customer: string;
 
-  constructor() {
-    this.admins = [];
-    this.storeOwners = [];
-  }
+  public admins: string[] = [];
+  public storeOwners: string[] = [];
+  public featuredStoreOwners: string[] = [];
+
+  constructor() {}
 
   async localWeb3() {
     // Hack to provide backwards compatibility for Truffle, which uses web3js 0.20.x
@@ -127,15 +127,18 @@ export class SmartContractService {
         return;
       }
       this.accounts = accounts;
+      if (accounts.length === 1) {
+        this.customer = accounts[0];
+      }
       this.getRoles();
     });
   }
 
   // sets contract variable, returns true if contract was set up successfully
   async setContract() {
-    this.Marketplace = contract(marketplaceArtifact);
-    this.Marketplace.setProvider(this.provider);
-    this.Marketplace = await this.Marketplace.deployed();
+    const Marketplace = contract(marketplaceArtifact);
+    Marketplace.setProvider(this.provider);
+    this.Marketplace = await Marketplace.deployed();
     const bytecode = await this.web3.eth.getCode(this.Marketplace.address);
     // if bytecode is '0x' or '0x0' return false
     return bytecode !== '0x0' && bytecode !== '0x';
@@ -212,7 +215,7 @@ export class SmartContractService {
     const gas = await this.Marketplace.addStore.estimateGas(name, description, {
       from: this.storeOwner
     });
-    this.Marketplace.addStore(name, description, {
+    return this.Marketplace.addStore(name, description, {
       from: this.storeOwner,
       gas: gas
     });
@@ -222,7 +225,7 @@ export class SmartContractService {
     const gas = await this.Marketplace.removeStore.estimateGas(id, {
       from: this.storeOwner
     });
-    this.Marketplace.removeStore(id, {
+    await this.Marketplace.removeStore(id, {
       from: this.storeOwner,
       gas: gas
     });
@@ -247,35 +250,52 @@ export class SmartContractService {
         from: this.storeOwner
       }
     );
-    this.Marketplace.addItem(id, name, description, price, image, stock, {
-      from: this.storeOwner,
-      gas: gas
-    });
+    return this.Marketplace.addItem(
+      id,
+      name,
+      description,
+      price,
+      image,
+      stock,
+      {
+        from: this.storeOwner,
+        gas: gas
+      }
+    );
   }
 
   async removeItem(storeID: string, itemID: string) {
     const gas = await this.Marketplace.removeItem.estimateGas(storeID, itemID, {
       from: this.storeOwner
     });
-    this.Marketplace.removeItem(storeID, itemID, {
+    return this.Marketplace.removeItem(storeID, itemID, {
       from: this.storeOwner,
       gas: gas
     });
   }
 
-  async getStores() {
-    if (this.Marketplace === undefined || this.storeOwner === undefined) {
-      return;
+  async getStores(address?: string) {
+    let storeOwner;
+    if (address) {
+      if (this.Marketplace === undefined) {
+        return;
+      }
+      storeOwner = address;
+    } else {
+      if (this.Marketplace === undefined || this.storeOwner === undefined) {
+        return;
+      }
+      storeOwner = this.storeOwner;
     }
     const stores = new Stores();
     const storeIdList: string[] = await this.Marketplace.getStoreIdList(
-      this.storeOwner
+      storeOwner
     );
 
     for (let i = 0; i < storeIdList.length; i++) {
       const storeID = storeIdList[i];
       const result: any[] = await this.Marketplace.getStore(
-        this.storeOwner,
+        storeOwner,
         storeID
       );
 
@@ -290,19 +310,28 @@ export class SmartContractService {
     return { stores: stores, storeIdList: storeIdList };
   }
 
-  async getItems(storeID: string) {
-    if (this.Marketplace === undefined || this.storeOwner === undefined) {
-      return;
+  async getItems(storeID: string, address?: string) {
+    let storeOwner;
+    if (address) {
+      if (this.Marketplace === undefined) {
+        return;
+      }
+      storeOwner = address;
+    } else {
+      if (this.Marketplace === undefined || this.storeOwner === undefined) {
+        return;
+      }
+      storeOwner = this.storeOwner;
     }
     const items = new Items();
     const itemIdList: string[] = await this.Marketplace.getItemIdList(
-      this.storeOwner,
+      storeOwner,
       storeID
     );
     for (let i = 0; i < itemIdList.length; i++) {
       const itemID = itemIdList[i];
       const result: any[] = await this.Marketplace.getItem(
-        this.storeOwner,
+        storeOwner,
         storeID,
         itemID
       );
@@ -320,18 +349,36 @@ export class SmartContractService {
     return { items: items, itemIdList: itemIdList };
   }
 
-  async getStore(id: string) {
-    if (this.Marketplace === undefined || this.storeOwner === undefined) {
-      throw new Error('no store owner account set');
+  async getStore(id: string, address?: string) {
+    let storeOwner;
+    if (address) {
+      if (this.Marketplace === undefined) {
+        throw new Error('Marketplace contract is not setup');
+      }
+      storeOwner = address;
+    } else {
+      if (this.Marketplace === undefined || this.storeOwner === undefined) {
+        throw new Error('no store owner account set');
+      }
+      storeOwner = this.storeOwner;
     }
-    return await this.Marketplace.getStore(this.storeOwner, id);
+    return await this.Marketplace.getStore(storeOwner, id);
   }
 
-  async getItem(storeID: string, itemID: string) {
-    if (this.Marketplace === undefined || this.storeOwner === undefined) {
-      throw new Error('no store owner account set');
+  async getItem(storeID: string, itemID: string, address?: string) {
+    let storeOwner;
+    if (address) {
+      if (this.Marketplace === undefined) {
+        throw new Error('Marketplace contract is not setup');
+      }
+      storeOwner = address;
+    } else {
+      if (this.Marketplace === undefined || this.storeOwner === undefined) {
+        throw new Error('no store owner account set');
+      }
+      storeOwner = this.storeOwner;
     }
-    return await this.Marketplace.getItem(this.storeOwner, storeID, itemID);
+    return await this.Marketplace.getItem(storeOwner, storeID, itemID);
   }
 
   async getBalance() {
@@ -341,27 +388,54 @@ export class SmartContractService {
     return await this.Marketplace.balances(this.storeOwner);
   }
 
-  withdraw() {
+  async withdraw() {
     if (this.Marketplace === undefined || this.storeOwner === undefined) {
       throw new Error('no store owner account set');
     }
-    this.Marketplace.withdraw({ from: this.storeOwner });
+    return this.Marketplace.withdraw({ from: this.storeOwner });
   }
 
-  restock(storeID: string, itemID: string, amount: string) {
+  async restock(storeID: string, itemID: string, amount: string) {
     if (this.Marketplace === undefined || this.storeOwner === undefined) {
       throw new Error('no store owner account set');
     }
-    this.Marketplace.restock(storeID, itemID, amount, {
+    return this.Marketplace.restock(storeID, itemID, amount, {
       from: this.storeOwner
     });
   }
-  changePrice(storeID: string, itemID: string, newPrice: string) {
+
+  async changePrice(storeID: string, itemID: string, newPrice: string) {
     if (this.Marketplace === undefined || this.storeOwner === undefined) {
       throw new Error('no store owner account set');
     }
-    this.Marketplace.changePrice(storeID, itemID, newPrice, {
+    return this.Marketplace.changePrice(storeID, itemID, newPrice, {
       from: this.storeOwner
+    });
+  }
+
+  async setFeaturedStoreOwners() {
+    if (this.Marketplace === undefined) {
+      throw new Error('Marketplace contract is not setup');
+    }
+    for (let i = 0; i < 10; i++) {
+      const address = await this.Marketplace.featuredStoreOwners(i);
+      if (address !== '0x0000000000000000000000000000000000000000') {
+        this.featuredStoreOwners.push(address);
+      }
+    }
+  }
+  async purchase(
+    storeOwner: string,
+    storeID: string,
+    itemID: string,
+    price: string
+  ) {
+    if (this.Marketplace === undefined || this.customer === undefined) {
+      throw new Error('no customer account set');
+    }
+    return this.Marketplace.purchase(storeOwner, storeID, itemID, {
+      from: this.customer,
+      value: price
     });
   }
 }

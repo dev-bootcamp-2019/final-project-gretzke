@@ -1,0 +1,23 @@
+<div *ngIf="item === undefined" class="spinner">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="content" *ngIf="item !== undefined">
+  <h1>{{ item?.name }}
+    <span style="color:red" *ngIf="!item?.active">
+      <mat-icon>warning</mat-icon> INACTIVE
+    </span>
+  </h1>
+  <mat-divider></mat-divider>
+  <img [src]="'https://ipfs.io/ipfs/' + item?.image" alt="Item photo">
+  <div>
+    <p>{{ item?.description }}</p>
+    <button mat-raised-button color="primary" (click)="purchase()">
+      <mat-icon>attach_money</mat-icon>
+      Purchase
+    </button>
+
+    <p>ID: {{ itemID }}</p>
+    <p>Price: {{ itemPrice() }} ETH</p>
+    <p>Stock: {{ item.stock }}</p>
+  </div>
+</div>

@@ -1,3 +1,39 @@
-<p>
-  customer works!
-</p>
+<!-- SUB HEADER -->
+<mat-toolbar *ngIf="smartContract.accounts.length > 1">
+  <span style="margin-right: 15px">Choose customer account:</span>
+  <mat-form-field style="width: 500px;">
+    <mat-select [value]="smartContract.customer">
+      <mat-option *ngFor="let customer of smartContract.accounts" [value]="customer" (click)="smartContract.customer = customer">{{customer}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-toolbar>
+
+<!-- CONTENT -->
+<div class="content">
+  <h1>Customer Overview</h1>
+  <h3>Browse our featured store owners or enter the address of a store owner you want to visit</h3>
+
+  <form>
+    <mat-form-field appearance="standard" class="address-input">
+      <mat-label>Store Owner</mat-label>
+      <input matInput [formControl]="storeOwnerControl" [errorStateMatcher]="matcher" placeholder="Ethereum Address"
+        type="text" autocomplete="off">
+      <mat-hint>Address of store owner to visit</mat-hint>
+      <mat-error *ngIf="validateAddress()">
+        Address is <strong>invalid</strong>
+      </mat-error>
+      <mat-error *ngIf="storeOwnerControl.hasError('required')">
+        Address is <strong>required</strong>
+      </mat-error>
+      <button matSuffix mat-button [disabled]="validateAddress() || storeOwnerControl.hasError('required')" (click)="navigate(storeOwnerControl.value)">Add</button>
+    </mat-form-field>
+  </form>
+  <br>
+  <h2>Featured StoreOwners</h2>
+  <mat-list>
+    <mat-list-item *ngFor="let storeOwner of smartContract.featuredStoreOwners">
+      <button mat-raised-button (click)="navigate(storeOwner)">Visit</button>
+      <span style="margin-left: 20px">{{ storeOwner }}</span>
+    </mat-list-item>
+  </mat-list>
+</div>
