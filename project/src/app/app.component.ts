@@ -47,7 +47,7 @@ export class AppComponent {
         console.log('Most likely using local development blockchain');
         // if local blockchain wasn't set up correctly, set contract up properly
         if (!(await this.smartContract.setContract())) {
-          // TODO
+          alert('No contract set up! Please read Readme to set up smart contract correctly');
         }
         this.smartContract.setFeaturedStoreOwners();
         break;
