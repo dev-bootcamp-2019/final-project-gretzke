@@ -3,4 +3,4 @@ Deployed addresses:
 Rinkeby: 0x2b1ff6d3ed5e2b53345936f528f7cc29cffb2252
 
 IPFS hosted marketplace:
-https://ipfs.io/ipfs/QmWQAAqNXgbHFXZuDnAKV35X5L8PREQUhjnsRfZNEMfmkM/
+https://ipfs.io/ipfs/QmZ33rReBy8kM4tLW5Tqvqcr8ZvDLzkQVBtpJMBNGPfVLy/
