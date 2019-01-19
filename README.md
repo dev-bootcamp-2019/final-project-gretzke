@@ -58,6 +58,7 @@ Compile and migrate the smart contract
 
     truffle compile && migrate --reset
 
-Last but not least serve the frontend
+This will set up the smart contract and some stores and items for you. Last but not least serve the
+frontend
 
     ng serve
