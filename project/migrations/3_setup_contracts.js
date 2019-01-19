@@ -56,17 +56,17 @@ module.exports = function (deployer, network, accounts) {
             id,
             'Nano Ledger S',
             'Protect your crypto assets with the most popular multicurrency hardware wallet in the market. The Ledger Nano S is built around a secure chip, ensuring optimal security.',
-            web3.toWei('0.68', 'ether'),
+            web3.utils.toWei('0.68', 'ether'),
             'QmQ5zb9r9BEEerWzvh744DYw7FSfbBP5egsWyBEv1F5rCK',
             900, {
               from: storeOwner1
             }
-          );
+          )
           mp.addItem(
             id,
             'Trezor',
             'The most trusted hardware wallet in the world. Get yours today!',
-            web3.toWei('0.6', 'ether'),
+            web3.utils.toWei('0.6', 'ether'),
             'QmZu8Symv1j6dScEpaqD8mNMaKBP8fxL4tGPrQytKAVsDV',
             1378, {
               from: storeOwner1
@@ -76,7 +76,7 @@ module.exports = function (deployer, network, accounts) {
             id,
             'Ledger Blue',
             'Ledger Blue is a premium hardware wallet with an advanced user experience thanks to a large touchscreen interface. It is built around a Secure Element and includes all the security features you’d expect from a Ledger device.',
-            web3.toWei('1.36', 'ether'),
+            web3.utils.toWei('1.36', 'ether'),
             'QmdFYu4ysdenfsX2GrYGry82Fi1Zy62HjEBNj5nwaKbrAV',
             78, {
               from: storeOwner1

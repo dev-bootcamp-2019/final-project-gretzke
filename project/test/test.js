@@ -1,9 +1,34 @@
 const truffleAssert = require('truffle-assertions');
 
 const Marketplace = artifacts.require('Marketplace.sol');
-const Utility = artifacts.require('Utility.sol');
+
+/*
+Explanation on how I wrote these tests:
+- First we set up the context: define each role an account will have (makes everything easier to read) and set up our contract
+- Next we check that everything inside the constructor function was set up as expected
+- Then every function get's checked (I didn't check every function in my contract because it gets redundant after a while and
+  I get my point across I guess).
+  I wrote/tested most functions the same way using Test Driven Development following these steps:
+    1. Define an input you want to put into the function and
+      a. define the result of all variables that get changed for normal functions
+      b. define the return value for view / pure functions
+    2. make a function call and assert equal to compare the expected state changes / return value to the actual ones
+    3. In case of a function that updates state it's considered best practice to fire an event.
+       In that case check if all events were fired correctly using the truffle-assertions library
+    4. Check access rights: If a function should be restricted, using the roles set up in our context, check permission rights,
+       function throw and revert messages using the truffle-assertions library
+    5. Check input values: If input values should be validated, check all edge cases on which you expect the function to throw / go through
+    6. Write the smart contract function
+    7. Test if test passes, if not adjust function until everything works as expected
+    8. Analyse function if anything else needs to be tested, e.g.:
+       - Is there a case where an event shouldn't fire
+       - are there any asserts or requires that are untested
+       - are there any more edge cases that need to be checked
+       Write tests for these cases and check if all pass
+ */
 
 contract('Marketplace', accounts => {
+  // defines roles and deploys testing contract
   before(async () => {
     owner = accounts[0];
     admin1 = accounts[1];
@@ -14,15 +39,16 @@ contract('Marketplace', accounts => {
     instance = await Marketplace.new({
       from: owner
     });
-    utility = await Utility.new();
   });
 
-  it('should check that owner was set correctly', async () => {
+  // check that constructor was set correctly
+  it('should check that contract was set up correctly', async () => {
     // check if owner was set correctly
     const testedOwner = await instance.owner.call();
     assert.equal(owner, testedOwner, 'wrong owner');
   });
 
+  // check addAdmin function
   it('should add admins', async () => {
     // try to add admin from a non-owner account, should fail
     await truffleAssert.fails(
@@ -68,6 +94,7 @@ contract('Marketplace', accounts => {
     assert.equal(isAdmin, true, 'admin2 should have been added');
   });
 
+  // check addStoreOwner function
   it('should add shopowners', async () => {
     // try to add shopowner from a non-admin account, should fail
     await truffleAssert.fails(
@@ -114,6 +141,7 @@ contract('Marketplace', accounts => {
     assert.equal(isStoreOwner, true, 'shopowner2 should have been added');
   });
 
+  // check removeAdmin function
   it('should remove admins', async () => {
     // try to remove admin from a non-owner account, should fail
     await truffleAssert.fails(
@@ -153,6 +181,7 @@ contract('Marketplace', accounts => {
     assert.equal(isAdmin, false, 'admin2 should have been removed');
   });
 
+  // check removeStoreOwner function
   it('should remove shopowners', async () => {
     // try to remove shopowner from a non-admin account, should fail
     await truffleAssert.fails(
@@ -194,6 +223,7 @@ contract('Marketplace', accounts => {
     assert.equal(isStoreOwner, false, 'shopowner2 should have been added');
   });
 
+  // check addStore function
   it('should add store', async () => {
     const name = 'Test Name';
     const description = 'this is a test description';
@@ -220,10 +250,7 @@ contract('Marketplace', accounts => {
       from: sender
     });
     // calculate the ID
-    const encodedPack = await utility.encodeID(name, 1, sender, result.receipt.blockNumber);
-    storeID2 = web3.sha3(encodedPack, {
-      encoding: 'hex'
-    });
+    storeID2 = web3.utils.soliditySha3(name, 1, sender, result.receipt.blockNumber);
 
     // calculated ID should match emitted ID in AddedStore event
     await truffleAssert.eventEmitted(
@@ -253,10 +280,11 @@ contract('Marketplace', accounts => {
     );
   });
 
+  // check addItem function
   it('should add item', async () => {
     const name = 'Test Name';
     const description = 'this is a test description';
-    itemPrice = web3.toWei(0.5, 'ether');
+    itemPrice = web3.utils.toWei('0.5', 'ether');
     const image = '0x0000000000000000000000000000000000000000000000000000000000000000';
     // stock is required to be 1, for following tests to work
     itemStock = 1;
@@ -283,10 +311,7 @@ contract('Marketplace', accounts => {
     });
 
     // calculate the ID
-    const encodedPack = await utility.encodeID(name, 1, sender, result.receipt.blockNumber);
-    itemID2 = web3.sha3(encodedPack, {
-      encoding: 'hex'
-    });
+    itemID2 = web3.utils.soliditySha3(name, 1, sender, result.receipt.blockNumber);
 
     // calculated ID should match emitted ID in AddedItem event
     await truffleAssert.eventEmitted(
@@ -320,6 +345,7 @@ contract('Marketplace', accounts => {
     );
   });
 
+  // check purchase function
   it('should purchase item', async () => {
     // try to purchase item with not matching msg.value, should fail
     await truffleAssert.fails(
@@ -375,6 +401,7 @@ contract('Marketplace', accounts => {
     );
   });
 
+  // check restock function
   it('should restock item', async () => {
     const amount = 200;
     await truffleAssert.fails(
@@ -415,8 +442,4 @@ contract('Marketplace', accounts => {
       'item stock should have been incremented by amount'
     );
   });
-
-  it('should withdraw balance', async () => {});
-  it('should remove item', async () => {});
-  it('should remove store', async () => {});
 });
