@@ -42,12 +42,15 @@ export class AppComponent {
             'There was something wrong with setting up the rinkeby contract, please try again'
           );
         }
+        this.smartContract.setFeaturedStoreOwners();
         break;
       default:
         console.log('Most likely using local development blockchain');
         // if local blockchain wasn't set up correctly, set contract up properly
         if (!(await this.smartContract.setContract())) {
-          alert('No contract set up! Please read Readme to set up smart contract correctly');
+          alert(
+            'No contract set up! Please read Readme to set up smart contract correctly'
+          );
         }
         this.smartContract.setFeaturedStoreOwners();
         break;
